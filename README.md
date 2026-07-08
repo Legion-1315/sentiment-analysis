@@ -112,11 +112,13 @@ one JVM that serves both the UI and the `/api` endpoints — one URL, no CORS.
 
 ### Deploy to Render (free tier, no credit card)
 
-1. Push this repo to GitHub (see below).
-2. Sign in to [render.com](https://render.com) with GitHub.
-3. **New + → Blueprint**, pick the `sentiment-analysis` repo. Render reads
-   [`render.yaml`](render.yaml) and provisions the `sentisense` web service.
-4. Click **Apply**. First build takes ~5–8 min; the app is then live at
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/Legion-1315/sentiment-analysis)
+
+1. Click the button above (or in the Render dashboard: **New + → Blueprint**),
+   sign in with GitHub, and authorize access to this repo.
+2. Render reads [`render.yaml`](render.yaml) and provisions the `sentisense`
+   web service from the [`Dockerfile`](Dockerfile). Click **Apply**.
+3. First build takes ~5–8 min; the app is then live at
    `https://sentisense-XXXX.onrender.com`. Put that URL at the top of this README.
 
 Notes for the free plan:
