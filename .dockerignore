@@ -1,0 +1,14 @@
+# Build outputs and caches — rebuilt inside the image
+backend/build/
+backend/.gradle/
+backend/target/
+backend/data/
+frontend/node_modules/
+frontend/dist/
+
+# VCS / IDE / OS
+.git/
+.idea/
+.vscode/
+*.iml
+.DS_Store

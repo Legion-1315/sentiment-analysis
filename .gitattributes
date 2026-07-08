@@ -1,0 +1,12 @@
+# Normalize text to LF in the repository
+* text=auto eol=lf
+
+# Windows batch files must stay CRLF
+*.bat text eol=crlf
+
+# The Gradle wrapper script runs in the Linux build container — force LF
+gradlew text eol=lf
+
+# Binary assets must never be EOL-converted
+*.jar binary
+gradle/wrapper/gradle-wrapper.jar binary

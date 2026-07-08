@@ -1,0 +1,16 @@
+# Render Blueprint — deploy with: New + → Blueprint → pick this repo
+# Docs: https://render.com/docs/blueprint-spec
+services:
+  - type: web
+    name: sentisense
+    runtime: docker
+    plan: free
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    healthCheckPath: /api/sentiment/model-info
+    autoDeploy: true
+    envVars:
+      # Prod H2 file DB without AUTO_SERVER (no extra socket in the container).
+      # Render's disk is ephemeral on the free plan, so history resets on redeploy.
+      - key: SPRING_DATASOURCE_URL
+        value: jdbc:h2:file:/app/data/sentisense
