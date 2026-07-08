@@ -2,7 +2,10 @@
 
 [![CI](https://github.com/Legion-1315/sentiment-analysis/actions/workflows/ci.yml/badge.svg)](https://github.com/Legion-1315/sentiment-analysis/actions/workflows/ci.yml)
 
-🔗 **Live demo:** _add your Render URL here after deploying_ · **Source:** https://github.com/Legion-1315/sentiment-analysis
+🔗 **Live demo:** https://sentiment-analysis-n0a7.onrender.com · **Source:** https://github.com/Legion-1315/sentiment-analysis
+
+> ⏳ Hosted on Render's free tier, which sleeps after 15 min idle — the first
+> request may take ~50 s to wake, then it's fast.
 
 > Full-stack AI app: Spring Boot (Java 21, Gradle) REST API with a hybrid
 > lexicon + neural sentiment engine, and a React + Vite dashboard. Deployed as a

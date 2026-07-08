@@ -112,6 +112,8 @@ host's injected port. Verified locally (bundled static served correctly)
 - **Host:** Render free tier via [`render.yaml`](render.yaml) Blueprint
   (`runtime: docker`, `plan: free`, health check `/api/sentiment/model-info`).
   Prod overrides `SPRING_DATASOURCE_URL` to drop H2 `AUTO_SERVER`.
+  **Live:** https://sentiment-analysis-n0a7.onrender.com (deployed & verified
+  2026-07-08 — SPA, model-info, and analyze all return 200).
 - **Repo:** github.com/Legion-1315/sentiment-analysis (public).
 - **Free-tier caveats:** sleeps after 15 min idle (~50 s cold start — mitigate
   with a cron-job.org ping); H2 on ephemeral disk so history resets on redeploy.
