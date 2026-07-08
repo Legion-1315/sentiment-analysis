@@ -1,5 +1,7 @@
 # SentiSense — Consumer Sentiment & State-of-Mind Analysis
 
+[![CI](https://github.com/Legion-1315/sentiment-analysis/actions/workflows/ci.yml/badge.svg)](https://github.com/Legion-1315/sentiment-analysis/actions/workflows/ci.yml)
+
 🔗 **Live demo:** _add your Render URL here after deploying_ · **Source:** https://github.com/Legion-1315/sentiment-analysis
 
 > Full-stack AI app: Spring Boot (Java 21, Gradle) REST API with a hybrid
