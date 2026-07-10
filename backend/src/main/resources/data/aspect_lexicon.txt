@@ -1,0 +1,149 @@
+# Aspect taxonomy: surface term <TAB> canonical aspect
+# Covers the bundled review domains (electronics, restaurants, movies) plus
+# general e-commerce vocabulary. Lookup is lowercase; naive plural stripping
+# is applied by the analyzer, so singular forms are enough for regular nouns.
+
+# --- battery ---
+battery	battery
+batteries	battery
+charge	battery
+charging	battery
+charger	battery
+backup	battery
+
+# --- camera ---
+camera	camera
+photo	camera
+picture	camera
+lens	camera
+video	camera
+selfie	camera
+zoom	camera
+
+# --- display ---
+screen	display
+display	display
+resolution	display
+brightness	display
+touchscreen	display
+
+# --- audio ---
+sound	audio
+audio	audio
+speaker	audio
+volume	audio
+microphone	audio
+mic	audio
+headphones	audio
+earphones	audio
+headset	audio
+bass	audio
+
+# --- performance ---
+performance	performance
+speed	performance
+processor	performance
+lag	performance
+memory	performance
+storage	performance
+software	performance
+app	performance
+interface	performance
+
+# --- design ---
+design	design
+style	design
+color	design
+colour	design
+size	design
+weight	design
+build	design
+finish	design
+
+# --- quality ---
+quality	quality
+material	quality
+construction	quality
+durability	quality
+craftsmanship	quality
+
+# --- comfort / fit ---
+comfort	comfort
+fit	comfort
+grip	comfort
+ergonomics	comfort
+
+# --- connectivity ---
+wifi	connectivity
+bluetooth	connectivity
+signal	connectivity
+network	connectivity
+reception	connectivity
+connection	connectivity
+
+# --- price ---
+price	price
+cost	price
+value	price
+pricing	price
+deal	price
+bargain	price
+discount	price
+
+# --- delivery ---
+delivery	delivery
+shipping	delivery
+shipment	delivery
+package	delivery
+packaging	delivery
+courier	delivery
+arrival	delivery
+
+# --- customer service ---
+service	service
+support	service
+staff	service
+waiter	service
+waitress	service
+representative	service
+agent	service
+warranty	service
+refund	service
+replacement	service
+helpline	service
+
+# --- food (restaurant reviews) ---
+food	food
+taste	food
+flavor	food
+flavour	food
+meal	food
+dish	food
+pizza	food
+burger	food
+sushi	food
+dessert	food
+portion	food
+coffee	food
+drink	food
+
+# --- ambiance (restaurant reviews) ---
+ambiance	ambiance
+ambience	ambiance
+atmosphere	ambiance
+decor	ambiance
+music	ambiance
+
+# --- movies ---
+plot	story
+story	story
+storyline	story
+script	story
+screenplay	story
+ending	story
+dialogue	story
+acting	acting
+actor	acting
+actress	acting
+cast	acting
+direction	acting

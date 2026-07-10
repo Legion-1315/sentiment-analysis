@@ -92,6 +92,16 @@ public final class LexiconAnalyzer {
     }
 
     public Result analyze(String text) {
+        return analyze(text, Set.of());
+    }
+
+    /**
+     * Analyze while treating {@code excludedTokens} (lowercase) as valence-free.
+     * Used by aspect-based analysis: when scoring a clause *about* an aspect,
+     * the aspect term itself ("support", "value") must not contribute its own
+     * lexicon valence — only the opinion words around it should.
+     */
+    public Result analyze(String text, Set<String> excludedTokens) {
         List<String> tokens = Tokenizer.tokenize(text);
         boolean mixedCase = hasMixedCase(tokens);
         int butIndex = indexOfBut(tokens);
@@ -102,6 +112,9 @@ public final class LexiconAnalyzer {
         for (int i = 0; i < tokens.size(); i++) {
             String token = tokens.get(i);
             String lower = token.toLowerCase(Locale.ROOT);
+            if (excludedTokens.contains(lower)) {
+                continue;
+            }
             Double base = lexicon.get(lower);
             if (base == null || base == 0.0) {
                 continue;

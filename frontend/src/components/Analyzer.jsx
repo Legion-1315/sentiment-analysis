@@ -5,7 +5,7 @@ import { LabelBadge, MindStateBadge } from './SentimentBadge.jsx'
 
 const EXAMPLES = [
   'Absolutely love this phone, the camera is incredible!',
-  "The product is not bad, but delivery was extremely slow.",
+  'Gorgeous screen and great sound, but the battery is terrible and support never replied to my emails.',
   'Worst customer service ever. Never buying from them again!!!',
   'The package arrived on Tuesday afternoon.',
 ]
@@ -74,6 +74,29 @@ export default function Analyzer() {
               <Metric name="ML P(positive)" value={result.mlProbability.toFixed(3)} />
             </div>
           </div>
+
+          {result.aspects?.length > 0 && (
+            <div className="keywords">
+              <h3>Aspect breakdown</h3>
+              <div className="aspect-list">
+                {result.aspects.map((a, i) => (
+                  <div key={i} className="aspect-row" title={a.evidence?.join(' • ')}>
+                    <span className="aspect-name">{a.aspect}</span>
+                    <span
+                      className="chip"
+                      style={{
+                        borderColor: a.label === 'POSITIVE' ? 'var(--pos)'
+                          : a.label === 'NEGATIVE' ? 'var(--neg)' : 'var(--neu)',
+                      }}
+                    >
+                      {a.label.toLowerCase()} <small>{a.score > 0 ? '+' : ''}{a.score.toFixed(2)}</small>
+                    </span>
+                    <span className="aspect-mentions">{a.mentions.join(', ')}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
 
           {result.keywords?.length > 0 && (
             <div className="keywords">

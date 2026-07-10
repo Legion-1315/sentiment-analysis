@@ -41,7 +41,8 @@ public class SentimentEngine {
                            double score, double confidence, int purchaseIntent,
                            double lexiconScore, double mlProbability,
                            double positive, double negative, double neutral,
-                           List<LexiconAnalyzer.TokenScore> keywords) {
+                           List<LexiconAnalyzer.TokenScore> keywords,
+                           List<AspectSentimentAnalyzer.AspectSentiment> aspects) {
     }
 
     private static final double POSITIVE_THRESHOLD = 0.10;
@@ -51,10 +52,12 @@ public class SentimentEngine {
 
     private final LexiconAnalyzer lexicon;
     private final MlClassifier classifier;
+    private final AspectSentimentAnalyzer aspectAnalyzer;
 
     public SentimentEngine() {
         long start = System.currentTimeMillis();
         this.lexicon = new LexiconAnalyzer();
+        this.aspectAnalyzer = new AspectSentimentAnalyzer(lexicon);
         this.classifier = MlClassifier.trainFromBundledData();
         MlClassifier.Metrics m = classifier.metrics();
         log.info("Sentiment engine ready in {} ms — ML held-out accuracy {}%, F1 {}, vocab {}",
@@ -87,7 +90,8 @@ public class SentimentEngine {
 
         return new Analysis(label, state, state.meaning(), round(score), round(confidence),
                 purchaseIntent, lex.compound(), round(mlProb),
-                lex.positive(), lex.negative(), lex.neutral(), lex.contributions());
+                lex.positive(), lex.negative(), lex.neutral(), lex.contributions(),
+                aspectAnalyzer.analyze(text));
     }
 
     private static MindState mindState(double score) {

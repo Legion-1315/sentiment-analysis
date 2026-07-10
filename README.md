@@ -16,10 +16,15 @@ SentiSense analyzes any consumer text — a review, tweet, comment or support
 message — and predicts:
 
 - **Sentiment label**: POSITIVE / NEGATIVE / NEUTRAL with a score in [−1, 1]
+- **Aspect-based sentiment (ABSA)**: per-topic polarity — *camera = positive,
+  battery = negative, support = negative* — from a single review, with the
+  evidence clause behind each verdict
 - **Consumer mind state**: 🤩 Delighted · 🙂 Satisfied · 😐 Undecided ·
   🙁 Dissatisfied · 😡 Frustrated — each with a recommended business action
 - **Purchase intent** (0–100) and a **confidence** estimate
 - The exact **words that drove the verdict**, with their valence
+- **Batch aspect insights**: across hundreds of reviews, what customers talk
+  about and how they feel about each topic ("battery: 45 texts, 78% negative")
 
 ## How the AI works
 
@@ -35,6 +40,30 @@ training, so unfamiliar text gracefully falls back to the lexicon.
 
 **Measured on 300 held-out review sentences:** lexicon alone 76%, ML alone 81%,
 **ensemble 85% accuracy**.
+
+### Aspect-based sentiment (ABSA)
+
+On top of the whole-text score, a third analyzer answers *what exactly* the
+customer liked or disliked. It segments each sentence into clauses, matches
+tokens against a curated aspect taxonomy (~130 terms → 19 canonical aspects:
+battery, camera, display, price, delivery, service, food…), and scores each
+clause with the lexicon rules — **excluding the aspect term's own valence**.
+
+That exclusion fixes a classic lexicon failure: in *"support never replied to
+my emails"*, the noun *support* carries positive valence that used to drown
+out the negation. At the aspect level the term is neutralized and an
+**unmatched-negation prior** kicks in, so `service` correctly reads NEGATIVE
+even though the whole-text score stays (wrongly) mildly positive.
+
+```
+"Gorgeous screen and great sound, but the battery is terrible
+ and support never replied to my emails."
+
+  display  POSITIVE  +0.61   (gorgeous screen)
+  audio    POSITIVE  +0.62   (great sound)
+  battery  NEGATIVE  −0.48   (battery is terrible)
+  service  NEGATIVE  −0.35   (support never replied)
+```
 
 ## Quick start
 
@@ -54,9 +83,9 @@ npm run dev
 Open http://localhost:5173 — three tabs:
 
 1. **Live Analyzer** — analyze one text, see the gauge, mind state, purchase
-   intent and keyword attribution.
+   intent, per-aspect breakdown and keyword attribution.
 2. **Batch Analysis** — paste up to 200 texts (one per line), get a summary
-   donut + per-text results table.
+   donut, per-aspect insights table and per-text results.
 3. **Dashboard** — aggregate stats, sentiment distribution, mind-state chart,
    model metrics and analysis history (persisted in H2).
 
@@ -78,15 +107,28 @@ curl -X POST http://localhost:8080/api/sentiment/analyze \
   "purchaseIntent": 97,
   "lexiconScore": 0.9062,
   "mlProbability": 0.9971,
-  "keywords": [{"token": "LOVE", "score": 4.226}, {"token": "best", "score": 3.2}]
+  "keywords": [{"token": "LOVE", "score": 4.226}, {"token": "best", "score": 3.2}],
+  "aspects": []
 }
+```
+
+When the text mentions known aspects ("the camera is amazing but the battery
+is terrible"), `aspects` carries one entry per topic:
+
+```json
+"aspects": [
+  {"aspect": "camera", "label": "POSITIVE", "score": 0.5859,
+   "mentions": ["camera"], "evidence": ["The camera is amazing"]},
+  {"aspect": "battery", "label": "NEGATIVE", "score": -0.4767,
+   "mentions": ["battery"], "evidence": ["the battery is terrible"]}
+]
 ```
 
 ## Testing
 
 ```bash
 cd backend
-./gradlew test                          # 38 tests: unit + API integration
+./gradlew test                          # 47 tests: unit + API integration
 ./gradlew test --tests "com.sentisense.engine.EvaluationReportTest"   # analyzer comparison
 ```
 
@@ -98,14 +140,19 @@ cd backend
 | Emoticons | "just got my order **:(**" | NEGATIVE ✔ |
 | "but"-clause | "The design is nice **but** the battery is awful" | NEGATIVE ✔ |
 | Emphasis | "Absolutely **LOVE** this phone…**!!!**" | score 0.94, DELIGHTED ✔ |
+| Aspects | "Gorgeous **screen**, horrible **battery**" | display +, battery − ✔ |
+| Negated neutral verb | "**support never replied** to my emails" | aspect `service` NEGATIVE ✔ |
 | Validation | blank text / empty batch | HTTP 400 ✔ |
 
 ### Honest error analysis
 
 "Customer support never replied to my emails!!!" is misclassified as mildly
-positive: *support* is a positive lexicon term and *replied* carries no
-valence for the negation to flip. Negated-neutral-verb phrases are the
-engine's main known weakness — a future aspect-based model would address it.
+positive **at the whole-text level**: *support* is a positive lexicon term and
+*replied* carries no valence for the negation to flip. The **aspect-based
+analyzer fixes this** — it excludes the aspect term's own valence and applies
+an unmatched-negation prior, so the `service` aspect correctly reads NEGATIVE.
+The whole-text ensemble is left unchanged to stay faithful to its published
+held-out evaluation.
 
 ## Deployment (free, one Docker service)
 

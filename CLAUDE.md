@@ -35,6 +35,18 @@ lexicon. Final score maps to label (±0.10 thresholds) and to a consumer
 **mind state**: DELIGHTED / SATISFIED / UNDECIDED / DISSATISFIED / FRUSTRATED,
 plus a 0–100 purchase-intent heuristic.
 
+3. **`AspectSentimentAnalyzer`** — aspect-based sentiment (ABSA): per-aspect
+   polarity ("camera = positive, battery = negative") instead of one score per
+   text. Pipeline: clause segmentation (hard `.;!?\n` boundaries; soft
+   comma/conjunction splits with aspect-less segments merged into the
+   neighbouring aspect clause) → aspect detection against a curated taxonomy
+   (`resources/data/aspect_lexicon.txt`, ~130 terms → 19 canonical aspects,
+   naive plural stripping) → clause scoring via `LexiconAnalyzer` **with the
+   aspect terms excluded from valence** → mild negative prior (−0.35) for
+   clauses whose only signal is an unmatched negation. Returned in `aspects`
+   on every analysis; `/batch` aggregates them into per-aspect rows
+   (texts, avg score, pos/neg/neu split — top 12).
+
 ### Persistence
 
 H2 file database at `backend/data/` (gitignored). Every analysis is saved as
@@ -73,19 +85,23 @@ Build: Gradle 9.2 via wrapper, plugins `org.springframework.boot` 3.5.7 +
 `io.spring.dependency-management` 1.1.7; compiles with `--release 21` on any
 newer installed JDK (machine has JDK 25). Migrated from Maven 2026-07-08.
 
-## Test & evaluation status (2026-07-08)
+## Test & evaluation status (2026-07-10)
 
-- 38 JUnit tests, all green: tokenizer, lexicon rules, classifier, ensemble,
-  MockMvc API integration (`SentimentApiTest`), evaluation report.
+- 47 JUnit tests, all green: tokenizer, lexicon rules, classifier, ensemble,
+  aspect analyzer (`AspectSentimentAnalyzerTest`), MockMvc API integration
+  (`SentimentApiTest`), evaluation report.
 - Held-out accuracy (300 unseen review sentences): lexicon-only **76%**,
   ML-only **81%** (F1 0.805), **ensemble 85%** — the hybrid measurably beats
   both components.
 
 ## Known limitations
 
-- Negation of *neutral* verbs isn't caught by the lexicon: "support never
-  replied to my emails" scores positive ("support" is a positive lexicon term;
-  "replied" carries no valence to flip). Documented in README error analysis.
+- Negation of *neutral* verbs isn't caught by the lexicon at the **whole-text**
+  level: "support never replied to my emails" scores positive ("support" is a
+  positive lexicon term; "replied" carries no valence to flip). The
+  **aspect-level** result is correct — `AspectSentimentAnalyzer` excludes the
+  aspect term's own valence and applies the unmatched-negation prior, so the
+  `service` aspect reads NEGATIVE. Documented in README error analysis.
 - English only; sarcasm and implicit sentiment remain hard.
 - Model retrains on every backend start (cheap, deterministic via seed 42) —
   no weight persistence.
@@ -123,6 +139,8 @@ host's injected port. Verified locally (bundled static served correctly)
 
 ## Possible enhancements
 
-- Aspect-based sentiment (per product feature); emotion categories
-  (joy/anger/fear); CSV file upload for batch; export reports; weight
-  persistence; multilingual lexicons; transformer upgrade via DJL.
+- Emotion categories (joy/anger/fear); CSV file upload for batch; export
+  reports; weight persistence; multilingual lexicons; transformer upgrade via
+  DJL (note: ~250 MB ONNX weights won't fit Render's 512 MB free tier —
+  needs a paid tier or external inference).
+- Aspect-based sentiment **shipped 2026-07-10** (see engine section above).

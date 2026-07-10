@@ -167,6 +167,38 @@ button.danger:hover { background: var(--neg); color: #fff; }
 
 .chip small { color: var(--muted); }
 
+/* Aspect-based sentiment */
+.aspect-list { display: grid; gap: 8px; }
+
+.aspect-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: help;
+}
+
+.aspect-name {
+  font-weight: 600;
+  text-transform: capitalize;
+  min-width: 90px;
+}
+
+.aspect-mentions { color: var(--muted); font-size: 0.78rem; }
+
+.split-bar {
+  display: flex;
+  height: 10px;
+  min-width: 120px;
+  border-radius: 5px;
+  overflow: hidden;
+  background: var(--bg);
+}
+
+.split { height: 100%; }
+.pos-bg { background: var(--pos); }
+.neg-bg { background: var(--neg); }
+.neu-bg { background: var(--neu); }
+
 .stat-block { display: flex; flex-wrap: wrap; gap: 18px; }
 
 .stat { color: var(--muted); font-size: 0.82rem; }

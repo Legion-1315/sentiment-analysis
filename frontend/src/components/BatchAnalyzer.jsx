@@ -76,6 +76,38 @@ export default function BatchAnalyzer() {
             </div>
           </section>
 
+          {summary.aspects?.length > 0 && (
+            <section className="card wide">
+              <h2>Aspect insights</h2>
+              <p className="hint">What customers talk about — and how they feel about each topic.</p>
+              <div className="table-wrap">
+                <table>
+                  <thead>
+                    <tr><th>Aspect</th><th>Texts</th><th>Avg score</th><th>Sentiment split</th></tr>
+                  </thead>
+                  <tbody>
+                    {summary.aspects.map(a => (
+                      <tr key={a.aspect}>
+                        <td className="aspect-name">{a.aspect}</td>
+                        <td>{a.texts}</td>
+                        <td className={a.averageScore > 0.1 ? 'pos' : a.averageScore < -0.1 ? 'neg' : ''}>
+                          {a.averageScore > 0 ? '+' : ''}{a.averageScore.toFixed(3)}
+                        </td>
+                        <td>
+                          <div className="split-bar" title={`${a.positive} positive · ${a.neutral} neutral · ${a.negative} negative`}>
+                            {a.positive > 0 && <div className="split pos-bg" style={{ flex: a.positive }} />}
+                            {a.neutral > 0 && <div className="split neu-bg" style={{ flex: a.neutral }} />}
+                            {a.negative > 0 && <div className="split neg-bg" style={{ flex: a.negative }} />}
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </section>
+          )}
+
           <section className="card wide">
             <h2>Results</h2>
             <div className="table-wrap">
