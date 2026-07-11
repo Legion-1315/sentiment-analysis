@@ -2,8 +2,11 @@ name: Keep Render warm
 
 # Render's free tier puts the service to sleep after 15 minutes of inactivity
 # (~50 s cold start). This pings the API every ~10 minutes during hours when
-# someone is likely to open the demo (≈ 7:30 AM – 11:20 PM IST), which keeps
-# the monthly free instance-hours budget (750 h/workspace) comfortably intact.
+# someone is likely to open the demo (≈ 8:30 AM – 10:20 PM IST).
+#
+# The window is budgeted against Render's 750 free instance-hours/month per
+# workspace, shared with the ai-code-review app (this app ~430 h, ai-code-review
+# ~285 h, leaving headroom for organic traffic).
 #
 # Note: GitHub disables scheduled workflows after 60 days without repo
 # activity — any commit resets the clock.
@@ -11,8 +14,8 @@ name: Keep Render warm
 on:
   schedule:
     # minutes offset from :00 to dodge GitHub's top-of-the-hour congestion;
-    # hours are UTC (2-17 UTC ≈ 7:30-23:20 IST)
-    - cron: '4,14,24,34,44,54 2-17 * * *'
+    # hours are UTC (3-16 UTC ≈ 8:30 AM - 10:20 PM IST)
+    - cron: '4,14,24,34,44,54 3-16 * * *'
   workflow_dispatch: {}
 
 jobs:
