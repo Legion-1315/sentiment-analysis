@@ -173,9 +173,10 @@ one JVM that serves both the UI and the `/api` endpoints — one URL, no CORS.
 
 Notes for the free plan:
 - The service **sleeps after 15 min idle**; the next visit cold-starts in
-  ~50 s. To keep it warm for a demo, add a free cron ping (e.g.
-  [cron-job.org](https://cron-job.org)) hitting `/api/sentiment/model-info`
-  every 10 min.
+  ~50 s. This repo ships a scheduled GitHub Actions workflow
+  ([`keep-warm.yml`](.github/workflows/keep-warm.yml)) that pings the API
+  every ~10 minutes during waking hours (≈ 7:30–23:20 IST), keeping the demo
+  instant while staying inside Render's 750 free instance-hours/month.
 - The H2 database is on ephemeral disk, so analysis **history resets on
   redeploy** — expected for a demo.
 

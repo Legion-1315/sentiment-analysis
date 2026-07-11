@@ -131,8 +131,12 @@ host's injected port. Verified locally (bundled static served correctly)
   **Live:** https://sentiment-analysis-n0a7.onrender.com (deployed & verified
   2026-07-08 — SPA, model-info, and analyze all return 200).
 - **Repo:** github.com/Legion-1315/sentiment-analysis (public).
-- **Free-tier caveats:** sleeps after 15 min idle (~50 s cold start — mitigate
-  with a cron-job.org ping); H2 on ephemeral disk so history resets on redeploy.
+- **Free-tier caveats:** sleeps after 15 min idle (~50 s cold start). Mitigated
+  by [`keep-warm.yml`](.github/workflows/keep-warm.yml) — a scheduled GitHub
+  Actions ping every ~10 min, 2–17 UTC only (≈ 7:30–23:20 IST) so the two
+  Render apps stay inside the workspace's 750 free instance-hours/month.
+  GitHub pauses cron workflows after 60 days without commits. H2 on ephemeral
+  disk so history resets on redeploy.
 - **`.dockerignore`** excludes build outputs, `node_modules`, `.git`, `data/`.
 - The bundled `resources/static/` dir is created only inside the Docker build —
   it is **not** committed to the repo.
